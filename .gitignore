@@ -1,0 +1,14 @@
+# 저작권 자료 (교과서, 양식) — 저장소에 올리지 않음
+references/*.pdf
+references/*.pptx
+
+# 생성물 (스크립트로 다시 만들 수 있음)
+lectures/*/output/*.pptx
+lectures/*/assets/anim/
+media/
+
+# Python / OS
+__pycache__/
+*.pyc
+Thumbs.db
+~$*.pptx

@@ -1,0 +1,65 @@
+{
+  "barcode": {
+    "title": "Symbol Barcode Scanner",
+    "creator": "Michael Casey",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/47519419@N00/2570454846",
+    "provider": "flickr"
+  },
+  "stairs": {
+    "title": "Wheelchair ramp",
+    "creator": "waitscm",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/78341140@N00/15171084916",
+    "provider": "flickr"
+  },
+  "slide": {
+    "title": "Playgrounds: slide",
+    "creator": "jonolist",
+    "license": "by-sa",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "source": "https://www.flickr.com/photos/46635911@N00/143997346",
+    "provider": "flickr"
+  },
+  "pizza": {
+    "title": "Cheese and pepperoni pizza cut into slices.",
+    "creator": "maryseas4",
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://wordpress.org/photos/photo/5016a60f20/",
+    "provider": "wordpress"
+  },
+  "factory": {
+    "title": "Seagate Wuxi China Factory Tour",
+    "creator": "Robert Scoble",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/35034363287@N01/3009516045",
+    "provider": "flickr"
+  },
+  "subway": {
+    "title": "Shanghai Subway Platform",
+    "creator": "mooney47",
+    "license": "by",
+    "license_version": "2.0",
+    "license_url": "https://creativecommons.org/licenses/by/2.0/",
+    "source": "https://www.flickr.com/photos/48751247@N00/5106951490",
+    "provider": "flickr"
+  },
+  "sand": {
+    "title": "Sand Pile",
+    "creator": "cogdogblog",
+    "license": "cc0",
+    "license_version": "1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://www.flickr.com/photos/37996646802@N01/224099822",
+    "provider": "flickr"
+  }
+}

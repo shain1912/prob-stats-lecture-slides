@@ -73,6 +73,7 @@ class Deck:
         self.credits = json.loads(cred.read_text(encoding="utf-8")) if cred.exists() else {}
         self._src = list(self.prs.slides)
         self._cover, self._contents, self._goals, self._page = self._src[0], self._src[1], self._src[2], self._src[4]
+        self._moves = []
 
     # ── 양식 슬라이드 채우기 ────────────────────────────
     def cover(self, number, course, title, lecturer, image=None):
@@ -186,12 +187,23 @@ class Deck:
             self.video(s, name)
         return s
 
-    def credits_page(self):
-        if not self.credits:
+    def intro_video(self, path, poster, position=1):
+        """제목 띠 없는 전체 화면(16:9) 영상 슬라이드. position: 저장 후 슬라이드 위치(0 = 맨 앞, 1 = 표지 다음)"""
+        s = self.prs.slides.add_slide(self.prs.slide_layouts[1])          # 양식의 BLANK 레이아웃
+        for ph in list(s.placeholders):
+            remove(ph)
+        s.shapes.add_movie(str(path), 0, 0, self.prs.slide_width, self.prs.slide_height,
+                           poster_frame_image=str(poster), mime_type="video/mp4")
+        self._moves.append((s, position))
+        return s
+
+    def credits_page(self, extra=None):
+        """extra: 사진 외 출처 줄 (예: AI 생성 이미지·영상 안내)"""
+        if not self.credits and not extra:
             return None
-        s = self.page("", "이미지 출처", "비유 사진 출처 (Openverse 검색, CC 라이선스)")
+        s = self.page("", "이미지 출처", "사진 (Openverse 검색, CC 라이선스) · AI 생성 이미지·영상")
         lines = [f"{c['title']} — {c['creator']}, {license_label(c)}, {c['source']}" for c in self.credits.values()]
-        self.text(s, 1.2, 1.75, 11.2, 5.4, lines, size=12)
+        self.text(s, 1.2, 1.75, 11.2, 5.4, lines + list(extra or []), size=12)
         return s
 
     def save(self, out):
@@ -203,6 +215,10 @@ class Deck:
             if sid not in keep:
                 self.prs.part.drop_rel(sid.rId)
                 lst.remove(sid)
+        for slide, pos in self._moves:
+            sid = next(x for x in lst if self.prs.part.related_part(x.rId) is slide.part)
+            lst.remove(sid)
+            lst.insert(pos, sid)
         Path(out).parent.mkdir(parents=True, exist_ok=True)
         try:
             self.prs.save(out)

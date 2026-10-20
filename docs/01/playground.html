@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1강 확률분포 놀이터</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="../assets/page.css">
+<style>
+  .coins { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 48px; margin-top: 6px; }
+  .coin { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 15px;
+    border: 3px solid var(--red); animation: flip .35s ease; }
+  .coin.h { background: var(--red); color: #fff; }
+  .coin.t { background: #fff; color: var(--red); }
+  @keyframes flip { from { transform: rotateY(90deg); } to { transform: rotateY(0); } }
+  .pin { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+  .pin label { display: flex; flex-direction: column; align-items: center; font-size: 14px; gap: 2px; }
+  .pin input { width: 100%; max-width: 90px; text-align: center; }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: #666; margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="badge">1강</span><h1>확률분포 놀이터</h1>
+    <nav><a href="./">슬라이드</a><a href="quiz.html">퀴즈</a><a href="../">목록</a></nav>
+  </header>
+  <p class="lede">슬라이드의 manim 애니메이션을 직접 조작하는 공간 · 값을 바꾸면 그래프가 바로 반응
+    · 원본 장면 코드: <a href="https://github.com/shain1912/prob-stats-lecture-slides/blob/main/scripts/01_animations.py">scripts/01_animations.py</a></p>
+
+  <!-- 1 동전 던지기 -->
+  <section class="card" id="s1">
+    <h2><span class="n">01</span>동전 던지기 → 확률변수 X = 앞면의 개수</h2>
+    <p class="muted">많이 던질수록 상대도수(빨간 막대)가 이론 확률(회색 점선)에 가까워지는 모습 · 관련 장면: RandomVariable, PmfCoin</p>
+    <div class="controls">
+      <label>동전 개수 <input type="range" id="c-n" min="1" max="6" value="3"> <b id="c-nv">3</b>개</label>
+      <button class="solid" id="c-1">1번 던지기</button><button id="c-10">10번</button><button id="c-100">100번</button>
+      <button id="c-auto">자동 ▶</button><button id="c-reset">초기화</button>
+    </div>
+    <div class="coins" id="c-coins" aria-live="polite"><span class="muted">“1번 던지기”를 누르면 결과 표시</span></div>
+    <canvas id="c-cv" aria-label="앞면 개수의 상대도수와 이론 확률 막대그래프"></canvas>
+    <div class="legend"><span><i style="background:#E22B2D"></i>상대도수</span><span><i style="border:2px dashed #8C8C8C"></i>이론 확률</span></div>
+    <p class="stat" id="c-stat"></p>
+  </section>
+
+  <!-- 2 확률질량함수 만들기 -->
+  <section class="card" id="s2">
+    <h2><span class="n">02</span>확률질량함수 만들기</h2>
+    <p class="muted">막대를 위아래로 끌거나 아래 칸에 직접 입력 · 두 성질 ① 0 ≤ p ≤ 1 ② 합 = 1을 모두 만족해야 확률분포 · 관련 장면: PmfDefect</p>
+    <div class="controls">
+      <button id="p-norm" class="solid">합 = 1로 맞추기</button>
+      <button id="p-ex1">예: 동전 3개 앞면 수</button><button id="p-ex2">예: 불량품 수</button><button id="p-ex3">잘못된 예</button>
+    </div>
+    <canvas id="p-cv" aria-label="X = 0부터 4까지의 확률 막대, 끌어서 조절"></canvas>
+    <div class="pin" id="p-in"></div>
+    <p class="stat" id="p-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 3 넓이 = 확률 -->
+  <section class="card" id="s3">
+    <h2><span class="n">03</span>연속확률변수: 그래프 아래 넓이 = 확률</h2>
+    <p class="muted">a, b를 움직여 P(a ≤ X ≤ b) 확인 · a = b로 겹치면 넓이 0 → 한 점의 확률 0 · 관련 장면: UniformSubway, DensityCurve</p>
+    <div class="controls">
+      <label>확률밀도함수
+        <select id="a-f">
+          <option value="u">지하철 대기 시간: f(x) = 1/10 (0 ≤ x ≤ 10)</option>
+          <option value="k">확인 문제 2: f(x) = x/8 (0 ≤ x ≤ 4)</option>
+          <option value="t">산 모양: f(x) = 1 − |x − 1| (0 ≤ x ≤ 2)</option>
+        </select>
+      </label>
+    </div>
+    <div class="controls">
+      <label>a <input type="range" id="a-a" min="0" max="1000" value="300"> <b id="a-av"></b></label>
+      <label>b <input type="range" id="a-b" min="0" max="1000" value="500"> <b id="a-bv"></b></label>
+    </div>
+    <canvas id="a-cv" aria-label="확률밀도함수 그래프와 a부터 b까지 칠한 넓이"></canvas>
+    <p class="stat" id="a-stat" aria-live="polite"></p>
+  </section>
+
+  <!-- 4 히스토그램 → 곡선 -->
+  <section class="card" id="s4">
+    <h2><span class="n">04</span>히스토그램 → 확률밀도함수</h2>
+    <p class="muted">f(x) = x/8 (0 ≤ x ≤ 4)를 따르는 값을 무작위로 뽑아 히스토그램(높이 = 상대도수 ÷ 계급 크기)으로 표시 · 자료가 많고 계급이 좁을수록 곡선에 가까워지는 모습</p>
+    <div class="controls">
+      <button class="solid" id="h-100">100개 뽑기</button><button id="h-1000">1000개</button><button id="h-10000">10000개</button><button id="h-reset">초기화</button>
+      <label>계급 수 <input type="range" id="h-bins" min="2" max="60" value="8"> <b id="h-bv">8</b></label>
+      <label><input type="checkbox" id="h-curve" checked> 곡선 표시</label>
+    </div>
+    <canvas id="h-cv" aria-label="표본 히스토그램과 확률밀도함수 곡선"></canvas>
+    <p class="stat" id="h-stat"></p>
+  </section>
+</div>
+
+<script>
+const RED = '#E22B2D', RED_L = '#F6C4C5', GRAY = '#8C8C8C', INK = '#3F3F3F', FONT = "'Noto Sans KR', 'Malgun Gothic', sans-serif";
+const $ = id => document.getElementById(id);
+
+// ── 공통: 고해상도 캔버스 + 좌표축 ─────────────────────
+function Plot(canvas, height, xr, yr) {
+  const p = { canvas, ctx: canvas.getContext('2d'), height, xr, yr, L: 56, R: 18, T: 18, B: 40 };
+  p.resize = () => {
+    const dpr = devicePixelRatio || 1, w = canvas.clientWidth;
+    canvas.width = w * dpr; canvas.height = height * dpr; canvas.style.height = height + 'px';
+    p.ctx.setTransform(dpr, 0, 0, dpr, 0, 0); p.w = w;
+  };
+  p.X = x => p.L + (x - p.xr[0]) / (p.xr[1] - p.xr[0]) * (p.w - p.L - p.R);
+  p.Y = y => p.height - p.B - (y - p.yr[0]) / (p.yr[1] - p.yr[0]) * (p.height - p.T - p.B);
+  p.invY = py => p.yr[0] + (p.height - p.B - py) / (p.height - p.T - p.B) * (p.yr[1] - p.yr[0]);
+  p.clear = () => { p.ctx.clearRect(0, 0, p.w, p.height); };
+  p.axes = (xticks, yticks, xfmt = v => v, yfmt = v => v) => {
+    const c = p.ctx; c.font = `13px ${FONT}`; c.fillStyle = GRAY; c.strokeStyle = '#E4E0DC'; c.lineWidth = 1;
+    c.textAlign = 'right'; c.textBaseline = 'middle';
+    yticks.forEach(v => { c.beginPath(); c.moveTo(p.L, p.Y(v)); c.lineTo(p.w - p.R, p.Y(v)); c.stroke(); c.fillText(yfmt(v), p.L - 8, p.Y(v)); });
+    c.textAlign = 'center'; c.textBaseline = 'top';
+    xticks.forEach(v => c.fillText(xfmt(v), p.X(v), p.height - p.B + 8));
+    c.strokeStyle = INK; c.lineWidth = 1.5; c.beginPath();
+    c.moveTo(p.L, p.Y(Math.max(0, p.yr[0]))); c.lineTo(p.w - p.R, p.Y(Math.max(0, p.yr[0]))); c.stroke();
+  };
+  addEventListener('resize', () => { p.resize(); p.draw && p.draw(); });
+  p.resize();
+  return p;
+}
+const range = (a, b, s = 1) => { const r = []; for (let v = a; v <= b + 1e-9; v += s) r.push(+v.toFixed(6)); return r; };
+const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; };
+
+// ── 1. 동전 던지기 ──────────────────────────────────
+(() => {
+  let n = 3, counts, total, shown, auto = null;
+  const plot = Plot($('c-cv'), 300, [-0.5, 3.5], [0, 0.5]);
+  function reset() { counts = Array(n + 1).fill(0); total = 0; shown = Array(n + 1).fill(0); $('c-coins').innerHTML = '<span class="muted">“1번 던지기”를 누르면 결과 표시</span>'; }
+  function toss(times) {
+    let last;
+    for (let t = 0; t < times; t++) { last = Array.from({ length: n }, () => Math.random() < 0.5); counts[last.filter(Boolean).length]++; total++; }
+    const x = last.filter(Boolean).length;
+    $('c-coins').innerHTML = last.map(h => `<span class="coin ${h ? 'h' : 't'}">${h ? '앞' : '뒤'}</span>`).join('') +
+      `<span style="margin-left:10px;font-size:20px">→ X = <b style="color:${RED}">${x}</b></span>`;
+  }
+  const theo = k => C(n, k) / 2 ** n;
+  plot.draw = () => {
+    const ymax = Math.min(1, Math.ceil(Math.max(theo(Math.floor(n / 2)), ...shown) * 1.25 * 10) / 10);
+    plot.xr = [-0.5, n + 0.5]; plot.yr = [0, ymax]; plot.clear();
+    plot.axes(range(0, n), range(0, ymax, ymax > 0.5 ? 0.2 : 0.1), v => v, v => v.toFixed(1));
+    const c = plot.ctx, bw = (plot.X(1) - plot.X(0)) * 0.6;
+    for (let k = 0; k <= n; k++) {
+      c.fillStyle = RED; c.fillRect(plot.X(k) - bw / 2, plot.Y(shown[k]), bw, plot.Y(0) - plot.Y(shown[k]));
+      c.setLineDash([6, 4]); c.strokeStyle = GRAY; c.lineWidth = 2;
+      c.strokeRect(plot.X(k) - bw / 2, plot.Y(theo(k)), bw, plot.Y(0) - plot.Y(theo(k))); c.setLineDash([]);
+    }
+    $('c-stat').innerHTML = `던진 횟수 <b>${total}</b>회 · ` + range(0, n).map(k =>
+      `P(X=${k}) 이론 ${C(n, k)}/${2 ** n} · 상대도수 ${total ? (counts[k] / total).toFixed(3) : '-'}`).join(' · ');
+  };
+  function loop() {   // 막대 높이를 목표값으로 부드럽게 이동 (manim의 Transform 느낌)
+    if (auto) toss(5);
+    let moving = false;
+    for (let k = 0; k <= n; k++) {
+      const target = total ? counts[k] / total : 0;
+      shown[k] += (target - shown[k]) * 0.2;
+      if (Math.abs(target - shown[k]) > 1e-4) moving = true; else shown[k] = target;
+    }
+    plot.draw();
+    if (moving || auto) requestAnimationFrame(loop); else running = false;
+  }
+  let running = false;
+  const kick = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
+  $('c-n').oninput = e => { n = +e.target.value; $('c-nv').textContent = n; reset(); plot.draw(); };
+  $('c-1').onclick = () => { toss(1); kick(); };
+  $('c-10').onclick = () => { toss(10); kick(); };
+  $('c-100').onclick = () => { toss(100); kick(); };
+  $('c-auto').onclick = e => { auto = !auto; e.target.textContent = auto ? '멈춤 ❚❚' : '자동 ▶'; kick(); };
+  $('c-reset').onclick = () => { reset(); plot.draw(); };
+  reset(); plot.draw();
+})();
+
+// ── 2. 확률질량함수 만들기 ──────────────────────────
+(() => {
+  let p = [0.1, 0.2, 0.4, 0.2, 0.1], drag = -1;
+  const plot = Plot($('p-cv'), 320, [-0.5, 4.5], [-0.2, 1.05]);
+  const box = $('p-in');
+  box.innerHTML = p.map((_, k) => `<label>P(X=${k})<input type="text" inputmode="decimal" data-k="${k}"></label>`).join('');
+  const inputs = [...box.querySelectorAll('input')];
+  const parse = s => { const m = s.trim().match(/^(-?\d*\.?\d+)\/(\d*\.?\d+)$/); return m ? m[1] / m[2] : Number(s); };
+  inputs.forEach(inp => inp.onchange = () => { const v = parse(inp.value.replace('−', '-')); if (!isNaN(v)) p[+inp.dataset.k] = Math.max(-0.2, Math.min(1, v)); update(); });
+  function update(skipInputs) {
+    if (!skipInputs) inputs.forEach((inp, k) => inp.value = +p[k].toFixed(3));
+    plot.draw();
+    const sum = p.reduce((a, b) => a + b, 0), r1 = p.every(v => v >= -1e-9 && v <= 1 + 1e-9), r2 = Math.abs(sum - 1) < 0.005;
+    $('p-stat').innerHTML = `합 = <b>${sum.toFixed(3)}</b> · ① 0 ≤ p ≤ 1: <span class="${r1 ? 'ok' : 'bad'}">${r1 ? '만족' : '위반 (음수 확률)'}</span>`
+      + ` · ② 합 = 1: <span class="${r2 ? 'ok' : 'bad'}">${r2 ? '만족' : '위반'}</span> → `
+      + (r1 && r2 ? '<span class="ok">확률분포 성립 ✓</span>' : '<span class="bad">확률분포 아님</span>');
+  }
+  plot.draw = () => {
+    plot.clear(); plot.axes(range(0, 4), [-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0], v => `X=${v}`, v => v.toFixed(1));
+    const c = plot.ctx, bw = (plot.X(1) - plot.X(0)) * 0.55;
+    p.forEach((v, k) => {
+      c.fillStyle = v < 0 ? GRAY : (k === drag ? '#B81E20' : RED);
+      const y0 = plot.Y(0), y1 = plot.Y(v);
+      c.fillRect(plot.X(k) - bw / 2, Math.min(y0, y1), bw, Math.abs(y0 - y1));
+      c.fillStyle = INK; c.font = `bold 14px ${FONT}`; c.textAlign = 'center'; c.textBaseline = 'bottom';
+      c.fillText(v.toFixed(2), plot.X(k), Math.min(y0, y1) - 4);
+      c.fillStyle = RED_L; c.fillRect(plot.X(k) - 14, y1 - 3, 28, 6);   // 손잡이
+    });
+  };
+  const at = e => { const r = plot.canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  plot.canvas.addEventListener('pointerdown', e => {
+    const [x, y] = at(e); drag = Math.round((x - plot.X(0)) / (plot.X(1) - plot.X(0)));
+    if (drag < 0 || drag > 4) { drag = -1; return; }
+    plot.canvas.setPointerCapture(e.pointerId); move(y);
+  });
+  const move = y => { p[drag] = Math.round(Math.max(-0.2, Math.min(1, plot.invY(y))) * 100) / 100; update(); };
+  plot.canvas.addEventListener('pointermove', e => { if (drag >= 0) move(at(e)[1]); });
+  plot.canvas.addEventListener('pointerup', () => { drag = -1; plot.draw(); });
+  $('p-norm').onclick = () => { const q = p.map(v => Math.max(0, v)), s = q.reduce((a, b) => a + b, 0) || 1; p = q.map(v => v / s); update(); };
+  $('p-ex1').onclick = () => { p = [1 / 8, 3 / 8, 3 / 8, 1 / 8, 0]; update(); };
+  $('p-ex2').onclick = () => { p = [7 / 15, 7 / 15, 1 / 15, 0, 0]; update(); };
+  $('p-ex3').onclick = () => { p = [0.6, 0.6, -0.2, 0, 0]; update(); };
+  update();
+})();
+
+// ── 3. 넓이 = 확률 ─────────────────────────────────
+(() => {
+  const F = {
+    u: { lo: 0, hi: 10, ymax: 0.15, f: x => 0.1, cdf: x => x / 10, xt: range(0, 10), yt: [0, 0.05, 0.1, 0.15] },
+    k: { lo: 0, hi: 4, ymax: 0.6, f: x => x / 8, cdf: x => x * x / 16, xt: range(0, 4), yt: [0, 0.2, 0.4, 0.6] },
+    t: { lo: 0, hi: 2, ymax: 1.2, f: x => 1 - Math.abs(x - 1), cdf: x => x <= 1 ? x * x / 2 : 1 - (2 - x) ** 2 / 2, xt: range(0, 2, 0.5), yt: [0, 0.5, 1] },
+  };
+  let d = F.u;
+  const plot = Plot($('a-cv'), 320, [0, 10], [0, 0.15]);
+  const val = id => d.lo + (+$(id).value / 1000) * (d.hi - d.lo);
+  plot.draw = () => {
+    let a = val('a-a'), b = val('a-b'); if (a > b) [a, b] = [b, a];
+    plot.xr = [d.lo - (d.hi - d.lo) * 0.05, d.hi + (d.hi - d.lo) * 0.05]; plot.yr = [0, d.ymax];
+    plot.clear(); plot.axes(d.xt, d.yt, v => v, v => +v.toFixed(2));
+    const c = plot.ctx, N = 300, path = (x0, x1) => {
+      c.beginPath(); c.moveTo(plot.X(x0), plot.Y(0));
+      for (let i = 0; i <= N; i++) { const x = x0 + (x1 - x0) * i / N; c.lineTo(plot.X(x), plot.Y(d.f(x))); }
+      c.lineTo(plot.X(x1), plot.Y(0)); c.closePath();
+    };
+    path(d.lo, d.hi); c.fillStyle = '#F7F3F0'; c.fill();
+    path(a, b); c.fillStyle = 'rgba(226,43,45,.55)'; c.fill();
+    c.beginPath(); for (let i = 0; i <= N; i++) { const x = d.lo + (d.hi - d.lo) * i / N; i ? c.lineTo(plot.X(x), plot.Y(d.f(x))) : c.moveTo(plot.X(x), plot.Y(d.f(x))); }
+    c.strokeStyle = INK; c.lineWidth = 2.5; c.stroke();
+    [[a, 'a'], [b, 'b']].forEach(([x, s]) => {
+      c.strokeStyle = RED; c.lineWidth = 2; c.beginPath(); c.moveTo(plot.X(x), plot.Y(0)); c.lineTo(plot.X(x), plot.T); c.stroke();
+      c.fillStyle = RED; c.font = `bold 15px ${FONT}`; c.textAlign = 'center'; c.textBaseline = 'top'; c.fillText(s, plot.X(x) + (s === 'a' ? -10 : 10), plot.T);
+    });
+    const P = d.cdf(b) - d.cdf(a);
+    $('a-av').textContent = val('a-a').toFixed(2); $('a-bv').textContent = val('a-b').toFixed(2);
+    $('a-stat').innerHTML = `P(${a.toFixed(2)} ≤ X ≤ ${b.toFixed(2)}) = 칠한 넓이 = <b>${P.toFixed(4)}</b>`
+      + (b - a < 1e-9 ? ' · <span class="bad">a = b → 한 점 위의 넓이 0 → P(X = a) = 0</span>' : '')
+      + ` · 전체 넓이 = ${(d.cdf(d.hi) - d.cdf(d.lo)).toFixed(0)}`;
+  };
+  $('a-f').onchange = e => { d = F[e.target.value]; plot.draw(); };
+  $('a-a').oninput = $('a-b').oninput = () => plot.draw();
+  plot.draw();
+})();
+
+// ── 4. 히스토그램 → 곡선 ───────────────────────────
+(() => {
+  let xs = [];
+  const plot = Plot($('h-cv'), 320, [0, 4], [0, 0.8]);
+  const sample = k => { for (let i = 0; i < k; i++) xs.push(4 * Math.sqrt(Math.random())); plot.draw(); };   // 역함수 방법: F(x) = x²/16
+  plot.draw = () => {
+    const bins = +$('h-bins').value, w = 4 / bins, cnt = Array(bins).fill(0);
+    xs.forEach(x => cnt[Math.min(bins - 1, Math.floor(x / w))]++);
+    const dens = cnt.map(v => xs.length ? v / xs.length / w : 0);
+    plot.yr = [0, Math.max(0.7, Math.ceil(Math.max(...dens) * 10) / 10 + 0.1)];
+    plot.clear(); plot.axes(range(0, 4), range(0, plot.yr[1], 0.2), v => v, v => v.toFixed(1));
+    const c = plot.ctx;
+    dens.forEach((v, i) => {
+      c.fillStyle = RED_L; c.strokeStyle = '#fff'; c.lineWidth = bins > 30 ? 0.5 : 1.5;
+      const x0 = plot.X(i * w), x1 = plot.X((i + 1) * w);
+      c.fillRect(x0, plot.Y(v), x1 - x0, plot.Y(0) - plot.Y(v)); c.strokeRect(x0, plot.Y(v), x1 - x0, plot.Y(0) - plot.Y(v));
+    });
+    if ($('h-curve').checked) {
+      c.strokeStyle = RED; c.lineWidth = 3; c.beginPath(); c.moveTo(plot.X(0), plot.Y(0)); c.lineTo(plot.X(4), plot.Y(0.5)); c.stroke();
+      c.fillStyle = RED; c.font = `bold 15px ${FONT}`; c.textAlign = 'right'; c.fillText('f(x) = x/8', plot.X(4) - 6, plot.Y(0.5) - 18);
+    }
+    $('h-bv').textContent = bins;
+    $('h-stat').innerHTML = `자료 <b>${xs.length}</b>개 · 계급 크기 ${w.toFixed(3)} · 막대 넓이의 합 = ${xs.length ? '1' : '0'} (곡선 아래 넓이 = 1과 같음)`;
+  };
+  $('h-100').onclick = () => sample(100); $('h-1000').onclick = () => sample(1000); $('h-10000').onclick = () => sample(10000);
+  $('h-reset').onclick = () => { xs = []; plot.draw(); };
+  $('h-bins').oninput = $('h-curve').onchange = () => plot.draw();
+  plot.draw();
+})();
+</script>
+</body>
+</html>

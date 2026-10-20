@@ -3,6 +3,9 @@
 대학교 1학년 공대생 대상 「확률과 통계」 강의 슬라이드(PPTX) 제작 프로젝트.
 개념마다 [비유] 사진 슬라이드 + manim 애니메이션 슬라이드로 구성.
 
+## 웹 버전
+**https://shain1912.github.io/prob-stats-lecture-slides/** — 웹 슬라이드, 웹 퀴즈, 확률분포 놀이터 (`docs/`, GitHub Pages)
+
 ## 구조
 - `CLAUDE.md` — 강의 정보·작성 원칙 (명사형 종결, 그림 위주)
 - `.claude/skills/lecture-slides/` — 제작 스킬 (슬라이드 조립 라이브러리, manim 스타일, Openverse 사진 검색, 렌더·검수 도구)

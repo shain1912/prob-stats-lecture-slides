@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>확률과 통계 강의자료</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="assets/page.css">
+<style>
+  .lec { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; }
+  .lec img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 10px; }
+  .lec .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  @media (max-width: 600px) { .lec { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><h1>확률과 통계 강의자료</h1>
+    <nav><a href="https://github.com/shain1912/prob-stats-lecture-slides">GitHub</a></nav></header>
+  <p class="lede">대학교 1학년 공과대학 대상 · 개념마다 비유 사진 + manim 애니메이션 · 웹 슬라이드, 퀴즈, 확률분포 놀이터</p>
+
+  <article class="card lec">
+    <img src="01/assets/flow/goals.jpg" alt="확률 그래프를 바라보는 공대생 일러스트">
+    <div>
+      <p class="muted">1강</p>
+      <h2>확률변수와 확률분포</h2>
+      <p>확률변수 · 이산확률변수와 확률질량함수 · 연속확률변수와 확률밀도함수</p>
+      <div class="links">
+        <a class="btn solid" href="01/">슬라이드 보기</a>
+        <a class="btn" href="01/quiz.html">웹 퀴즈</a>
+        <a class="btn" href="01/playground.html">확률분포 놀이터</a>
+      </div>
+    </div>
+  </article>
+  <p class="muted">슬라이드: ← → 키로 이동 · F 전체 화면 · N 발표자 노트</p>
+</div>
+</body>
+</html>

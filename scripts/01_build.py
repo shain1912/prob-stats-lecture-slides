@@ -12,9 +12,12 @@ from deck import Deck
 LEC = ROOT / "lectures/01-introduction"
 d = Deck(ROOT / "references/1.pptx", LEC / "assets")
 
-d.cover("01", "확률과 통계", "확률변수와 확률분포", "강사 : ○○○", "cover.png")
+FLOW = LEC / "assets/flow"   # Google Flow로 생성한 AI 이미지·영상
+
+d.cover("01", "확률과 통계", "확률변수와 확률분포", "강사 : ○○○", "flow/cover.jpg")
+d.intro_video(FLOW / "intro.mp4", FLOW / "intro_poster.png", position=1)   # 표지 바로 다음
 d.contents("확률변수와 확률분포", ["확률변수란?", "이산확률변수와 확률분포", "연속확률변수와 확률밀도함수", "정리 및 확인 문제"])
-d.goals("goal.png", "확률변수와 확률분포의 뜻 이해", "이산·연속확률변수의 구분과 확률분포의 성질 활용")
+d.goals("flow/goals.jpg", "확률변수와 확률분포의 뜻 이해", "이산·연속확률변수의 구분과 확률분포의 성질 활용")
 
 # ── 1-1 확률변수 ────────────────────────────────────
 d.analogy("1-1", "확률변수란?", "바코드 스캐너", [("barcode", 3.3)], [
@@ -102,7 +105,8 @@ s = d.page("1-4", "정리 및 확인 문제", "이산확률변수 vs 연속확�
 d.pic(s, LEC / "assets/summary_compare.png", 1.1, 1.8, width=11.1)
 
 s = d.page("1-4", "정리 및 확인 문제", "확인 문제")
-d.text(s, 1.2, 1.7, 6.9, 5.4, [
+d.pic(s, FLOW / "quiz.jpg", 1.6, 4.4, width=2.6)
+d.text(s, 1.2, 1.7, 6.9, 2.7, [
     ("h", "문제 1"),
     "100원짜리 동전 3개를 동시에 던질 때, 앞면이 나오는 개수 X가 취하는 모든 값",
     ("h", "문제 2"),
@@ -115,5 +119,16 @@ s.notes_slide.notes_text_frame.text = (
     "문제 2: 전체 넓이 ½·4·4k = 8k = 1 → k = 1/8,  P(0 ≤ X ≤ 2) = ½·2·(2/8) = 1/4"
 )
 
-d.credits_page()
+s = d.page("1-4", "정리 및 확인 문제", "마무리")
+d.pic(s, FLOW / "closing.jpg", 3.4, 1.75, width=9.3)
+d.text(s, 1.1, 1.9, 5.0, 5.0, [
+    ("h", "오늘 배운 것"),
+    "확률변수 = 결과 → 실수",
+    "이산: 확률질량함수, 막대 높이",
+    "연속: 확률밀도함수, 그래프 아래 넓이",
+    ("h", "다음 시간"),
+    "이산확률변수의 기댓값과 표준편차",
+], size=18)
+
+d.credits_page(extra=["AI 생성 이미지·영상 (표지, 인트로 영상, 학습 목표, 확인 문제, 마무리) — Google Flow (Nano Banana 2.1, Omni 1.1 Flash)"])
 d.save(sys.argv[1] if len(sys.argv) > 1 else LEC / "output/01-introduction.pptx")

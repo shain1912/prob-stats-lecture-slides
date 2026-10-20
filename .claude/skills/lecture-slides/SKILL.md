@@ -29,7 +29,7 @@ scripts/NN_figures.py · NN_animations.py · NN_build.py
 - 용어·기호·예제는 교과서를 따른다. 교과서에 없는 공학 예제를 추가했다면 완료 보고에서 밝힌다.
 
 ### 2. 슬라이드 흐름
-표지 → 목차 → 학습 목표 → [개념마다: **비유 슬라이드 → 애니메이션 슬라이드**, 필요하면 성질 정리 슬라이드] → 정리 → 확인 문제(정답은 노트) → 이미지 출처
+표지 → (인트로 영상) → 목차 → 학습 목표 → [개념마다: **비유 슬라이드 → 애니메이션 슬라이드**, 필요하면 성질 정리 슬라이드] → 정리 → 확인 문제(정답은 노트) → 이미지 출처
 
 - 말투: 모든 문장 명사형 종결 ("확률의 합 = 1", "셀 수 있는 값"). "~입니다/~한다" 금지.
 - 비유는 "A = B" 형태로 대응을 명확히: 사진 속 사물 ↔ 수학 개념, 그리고 비유가 성질까지 설명하도록 (예: 피자 조각 크기는 음수 불가 → 0 ≤ 확률).
@@ -44,6 +44,14 @@ python SK/tools/openverse.py fetch <id> <저장이름> LEC/assets/photos 4:3
 ```
 - 자동으로 CC0·PDM·CC BY·CC BY-SA만 검색되고, 출처는 `credits.json`에 기록된다. 다른 사이트 이미지를 임의로 쓰지 않는다.
 - 두 장을 나란히 비교할 때는 같은 비율(4:3)로 자른다.
+
+### 3-1. AI 생성 이미지·인트로 영상 (Google Flow, 사용자가 요청할 때)
+Claude in Chrome으로 `https://labs.google/fx/tools/flow` 접속 → 새 프로젝트 → 하단 프롬프트 창.
+- 설정 칩(모델·비율·개수): 이미지 = Nano Banana 2.1(0 크레딧), 영상 = Omni 1.1 Flash 720p 8초(x1 = 12 크레딧). **영상은 크레딧이 들기 때문에 x1로 생성하고 사용량을 사용자에게 알린다.**
+- 이미지 프롬프트 공통 꼬리: `Flat vector illustration on a pure white background … Minimal clean style, red (#E22B2D) and light gray palette, no text, no letters.`
+- 넣을 곳: 표지(3:4), 학습 목표(4:3), 확인 문제(1:1, 빈 아래쪽), 마무리(16:9, 왼쪽 여백 → 오늘 배운 것·다음 시간), 인트로 영상(16:9, 표지 다음 전체 화면)
+- 다운로드는 사용자 승인 후. 결과 묶음 오른쪽 다운로드 아이콘 = 2장 묶음 zip → `~/Downloads/다운로드*.zip`. zip마다 새 폴더(scratchpad)에 풀어 contact sheet로 고르고 `LEC/assets/flow/`에 `cover.jpg`·`goals.jpg`·`quiz.jpg`·`closing.jpg`·`intro.mp4`(+ `intro_poster.png` 마지막 프레임)로 저장. 이미지 src 직접 fetch는 CORS로 막힘.
+- 조립: `d.cover(..., "flow/cover.jpg")`, `d.intro_video(FLOW/"intro.mp4", FLOW/"intro_poster.png", position=1)`, `d.goals("flow/goals.jpg", …)`, `d.credits_page(extra=["AI 생성 이미지·영상 … — Google Flow"])`
 
 ### 4. manim 애니메이션
 `scripts/NN_animations.py` 맨 위:
@@ -94,6 +102,14 @@ autoplay는 영상을 "슬라이드 열리면 자동 재생, 끝나면 마지막
 python SK/tools/preview.py "<pptx 절대경로>" <scratchpad>/preview
 ```
 → `sheet_*.png`를 모두 Read로 확인: 글자 겹침, 어색한 줄바꿈, 화면 밖 잘림, 명사형 종결, 빈 슬라이드. 고친 뒤 build → autoplay → preview 반복.
+
+### 7-1. 웹 버전 (GitHub Pages, 사용자가 요청할 때)
+`docs/`가 GitHub Pages 루트(main 브랜치 /docs). 공통 엔진 `docs/assets/deck.css·deck.js`(1920×1080 무대, ←→·F·N, 영상 자동 재생), `page.css`(퀴즈·놀이터).
+```
+python SK/tools/export_web.py LEC docs/NN
+```
+→ `docs/01/`을 복사해 `docs/NN/index.html`(슬라이드: `<section class="slide">`, `.head`/`.row`/`video.anim`, 노트는 `<aside class="note">`, 정답은 `.reveal` 버튼), `quiz.html`(QUIZ 배열: choice/multi/num), `playground.html`(manim 장면을 canvas로 조작)을 내용만 바꾼다. `docs/index.html` 목록에 강의 카드 추가.
+검수: `python -m http.server`로 띄우고 Chrome으로 슬라이드 넘김·영상 재생·퀴즈 채점·놀이터 조작 확인 → 커밋·push → `https://shain1912.github.io/prob-stats-lecture-slides/`
 
 ### 8. 완료 보고
 - 파일 경로, 슬라이드 수, 구성 표(개념 / 비유 / 애니메이션)
